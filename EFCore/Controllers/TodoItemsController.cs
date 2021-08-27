@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EFCore.Application.Models;
 using EFCore.Application.Dtos;
 using EFCore.Application.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace EFCore.Controllers
 {
@@ -15,25 +16,26 @@ namespace EFCore.Controllers
     [ApiController]
     public class TodoItemsController : ControllerBase
     {
-        private readonly IApplicationDbContext _context;
+        private readonly ITodoRepository _todoRepository;
 
-        public TodoItemsController(IApplicationDbContext context)
+        public TodoItemsController(ITodoRepository todoRepository)
         {
-            _context = context;
+            _todoRepository = todoRepository;
+
         }
 
         // GET: api/TodoItems
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
-            return await _context.TodoItems.ToListAsync();
+            return Ok(await _todoRepository.GetTodoItems());
         }
 
         // GET: api/TodoItems/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var todoItem = await _todoRepository.GetTodoItem(id);
 
             if (todoItem == null)
             {
@@ -46,22 +48,7 @@ namespace EFCore.Controllers
         [HttpGet("/done/{done}")]
         public async Task<ActionResult<IEnumerable<TodoItemDto>>> GetToDoItemsByStatus(bool done)
         {
-            var todoItems = await _context.TodoItems
-                                        .Include(i => i.TodoCategory)
-                                        .Where(i => i.Done == done)
-                                        .AsNoTracking()
-                                        .Select(item => new TodoItemDto()
-                                        {
-                                            Title = item.Title,
-                                            Completed = item.Completed,
-                                            Done = item.Done,
-                                            description = item.ToString(),
-                                            TodoItemCategoryDto = new TodoItemCategoryDto()
-                                            {
-                                                Name = item.TodoCategory.Name
-                                            }
-                                            
-                                        }).ToListAsync();
+            var todoItems = await _todoRepository.GetToDoItemsByStatus(done);
 
             return Ok(todoItems);
         }
@@ -71,30 +58,19 @@ namespace EFCore.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
         {
-            if (id != todoItem.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.MarkAsModified(todoItem);
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _todoRepository.PutTodoItem(id, todoItem);
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch(Exception ex)
             {
-                if (!TodoItemExists(id))
+                if(ex.Message == "Item not found")
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                return NoContent();
             }
-
-            return NoContent();
         }
 
         // POST: api/TodoItems
@@ -102,9 +78,7 @@ namespace EFCore.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
-
+            await _todoRepository.PostTodoItem(todoItem);
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
         }
 
@@ -112,21 +86,13 @@ namespace EFCore.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
-            if (todoItem == null)
+            var isDeleted = await _todoRepository.DeleteTodoItem(id);
+            if (!isDeleted)
             {
                 return NotFound();
             }
 
-            _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
-
             return NoContent();
-        }
-
-        private bool TodoItemExists(long id)
-        {
-            return _context.TodoItems.Any(e => e.Id == id);
         }
     }
 }
