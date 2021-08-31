@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Distributed;
+using EFCore.Infrastructure.Contexts;
 
 namespace EFCore.Infrastructure
 {
@@ -18,6 +19,9 @@ namespace EFCore.Infrastructure
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase(databaseName: "ToDo"));
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+
+            services.AddDbContext<PersonContext>(options => options.UseInMemoryDatabase(databaseName: "Person"));
+            services.AddScoped<IPersonContext>(provider => provider.GetService<PersonContext>());
 
             services.AddScoped<ITodoRepository, TodoRepository>();
 

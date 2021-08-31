@@ -1,5 +1,7 @@
+using EFCore.Application;
 using EFCore.Application.Interfaces;
 using EFCore.Infrastructure;
+using EFCore.Infrastructure.Contexts;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +30,7 @@ namespace EFCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddInfrastructure(Configuration);
+            services.AddApplication(Configuration);
             services.AddControllers()
                     .AddFluentValidation(f => f.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddSwaggerGen(c =>
@@ -49,7 +52,8 @@ namespace EFCore
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                DbInitialiser.Initialize(context);
+                var pcontext = serviceScope.ServiceProvider.GetService<PersonContext>();
+                DbInitialiser.Initialize(context, pcontext);
             }
 
 
