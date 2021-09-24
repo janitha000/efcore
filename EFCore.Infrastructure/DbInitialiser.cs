@@ -20,6 +20,8 @@ namespace EFCore
                 return;
             }
 
+            Console.WriteLine("Seeding data in to the database .......");
+
             var todoCategories = new TodoCategory[]
             {
                 new TodoCategory{Id = 1, Name = "Home"},

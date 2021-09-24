@@ -94,8 +94,17 @@ namespace EFCore.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
-            await _todoRepository.PostTodoItem(todoItem);
-            return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            try
+            {
+                await _todoRepository.PostTodoItem(todoItem);
+                return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Error occured {e.Message}");
+                return NoContent();
+            }
+            
         }
 
         // DELETE: api/TodoItems/5

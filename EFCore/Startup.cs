@@ -1,5 +1,6 @@
 using EFCore.Application;
 using EFCore.Application.Interfaces;
+using EFCore.Configurations;
 using EFCore.Infrastructure;
 using EFCore.Infrastructure.Contexts;
 using FluentValidation.AspNetCore;
@@ -37,6 +38,8 @@ namespace EFCore
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EFCore", Version = "v1" });
             });
+
+            services.Configure<BaseConfiguration>(Configuration.GetSection("Base"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
