@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EFCore.Configurations;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +20,26 @@ namespace EFCore.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private IConfiguration _config;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public IOptions<object> Options { get; }
+
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration config, IOptions<BaseConfiguration> options)
         {
             _logger = logger;
+            _config = config;
+            Options = options;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            var baseConfig = _config.GetSection("BaseUrl").Value;
+            Console.WriteLine(_config.GetValue<string>("Logging:LogLevel:Default"));
+
+            var settings = Options.Value;
+            Console.WriteLine(settings);
+
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

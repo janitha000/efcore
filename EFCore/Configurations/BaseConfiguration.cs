@@ -7,6 +7,8 @@ namespace EFCore.Configurations
 {
     public class BaseConfiguration
     {
-        public string BaseUrl { get; set; }
+        public string Type { get; set; }
+        public string Url { get; set; }
+        public string Path { get; set; }
     }
 }

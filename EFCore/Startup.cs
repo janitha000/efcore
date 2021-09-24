@@ -13,8 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-
+using System;
 
 namespace EFCore
 {
@@ -23,9 +24,11 @@ namespace EFCore
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+           
         }
 
         public IConfiguration Configuration { get; }
+        public IOptions<object> Options { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -39,7 +42,7 @@ namespace EFCore
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EFCore", Version = "v1" });
             });
 
-            services.Configure<BaseConfiguration>(Configuration.GetSection("Base"));
+            services.Configure<BaseConfiguration>(Configuration.GetSection("BaseUrl"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +53,12 @@ namespace EFCore
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EFCore v1"));
+            }
+
+            if(env.IsProduction())
+            {
+                Console.WriteLine("Running on Producttion");
+
             }
 
             using (var serviceScope = app.ApplicationServices.CreateScope())
