@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using EFCore.Application.Interfaces;
+using EFCore.Application.Services;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,6 +16,7 @@ namespace EFCore.Application
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration )
         {
             services.AddMediatR(typeof(MediatREntryPoint).Assembly);
+            services.AddScoped<IToDoService, ToDoService>();
 
             return services;
         }

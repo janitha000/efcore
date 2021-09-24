@@ -17,10 +17,12 @@ namespace EFCore.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly ITodoRepository _todoRepository;
+        private readonly IToDoService _todoService;
 
-        public TodoItemsController(ITodoRepository todoRepository)
+        public TodoItemsController(ITodoRepository todoRepository, IToDoService todoService)
         {
             _todoRepository = todoRepository;
+            _todoService = todoService;
 
         }
 
@@ -51,6 +53,20 @@ namespace EFCore.Controllers
             var todoItems = await _todoRepository.GetToDoItemsByStatus(done);
 
             return Ok(todoItems);
+        }
+
+        [HttpGet("/toggle/{id}")]
+        public async Task<ActionResult<TodoItem>> ToggleDone(int id)
+        {
+            var todoItem = await _todoRepository.GetTodoItem(id);
+            if(todoItem is null)
+            {
+                return NotFound();
+            }
+
+            var item = _todoService.ToggleDone(todoItem);
+
+            return Ok(item);
         }
 
         // PUT: api/TodoItems/5
@@ -94,5 +110,7 @@ namespace EFCore.Controllers
 
             return NoContent();
         }
+
+        
     }
 }
