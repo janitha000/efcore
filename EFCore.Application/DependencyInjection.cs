@@ -1,4 +1,5 @@
 ﻿using EFCore.Application.Interfaces;
+using EFCore.Application.Interfaces.SeviceInterfaces;
 using EFCore.Application.Services;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +18,14 @@ namespace EFCore.Application
         {
             services.AddMediatR(typeof(MediatREntryPoint).Assembly);
             services.AddScoped<IToDoService, ToDoService>();
+            services.AddScoped<IBitCoinService, BitCoinService>();
 
+            services.AddHttpClient("BitCoinClient", client =>
+            {
+                client.BaseAddress = new Uri("https://api.coindesk.com/v1/bpi/currentprice.json");
+                client.DefaultRequestHeaders.Add("Authorization", "YOUR_ASSEMBLY_AI_TOKEN");
+            });
+            services.AddHttpClient();
             return services;
         }
     }

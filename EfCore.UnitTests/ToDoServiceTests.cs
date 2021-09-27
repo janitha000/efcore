@@ -1,6 +1,9 @@
-﻿using EFCore.Application.Interfaces;
+﻿using EfCore.UnitTests.TestData;
+using EFCore.Application.Interfaces;
 using EFCore.Application.Models;
 using EFCore.Application.Services;
+using EFCore.Configurations;
+using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -11,15 +14,16 @@ using Xunit;
 
 namespace EfCore.UnitTests
 {
-    
+
     public class ToDoServiceTests
     {
         private ToDoService ToDoService;
-        
+        private IOptions<BaseConfiguration> _baseOptions;
 
-        public ToDoServiceTests()
+        public ToDoServiceTests(IOptions<BaseConfiguration> options)
         {
             ToDoService = new ToDoService();
+            _baseOptions = options;
         }
 
 
@@ -30,9 +34,27 @@ namespace EfCore.UnitTests
 
             var output = ToDoService.ToggleDone(inputItem);
 
-            Assert.True(output.Done);
+            var options = _baseOptions.Value;
 
+            Assert.True(output.Done);
+        }
+
+        [Theory]
+        [ClassData(typeof(ToDoTestData))]
+        public void ToggleDone_ShouldToggleDone_Theory(TodoItem inputItem, bool expected)
+        {
+            var result = ToDoService.ToggleDone(inputItem);
+            Assert.Equal(expected, result.Done);
 
         }
+
+        //[Theory]
+        //[MemberData(memberName: nameof(GetTodoItems)]
+        //public void ToggleDone_ShouldToggleDone_Theory_memberdata(TodoItem inputItem, bool expected)
+        //{
+        //    var result = ToDoService.ToggleDone(inputItem);
+        //    Assert.Equal(expected, result.Done);
+
+        //}
     }
 }
