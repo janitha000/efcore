@@ -34,6 +34,7 @@ namespace EFCore.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            _logger.LogInformation("WeatherForcast GET request called");
             var baseConfig = _config.GetSection("BaseUrl").Value;
             Console.WriteLine(_config.GetValue<string>("Logging:LogLevel:Default"));
 

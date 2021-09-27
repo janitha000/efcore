@@ -35,8 +35,12 @@ namespace EFCore
         {
             services.AddInfrastructure(Configuration);
             services.AddApplication(Configuration);
+
             services.AddControllers()
-                    .AddFluentValidation(f => f.RegisterValidatorsFromAssemblyContaining<Startup>());
+                    .AddFluentValidation(f => f.RegisterValidatorsFromAssemblyContaining<Startup>())
+                    .AddNewtonsoftJson(options =>
+                        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    );
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EFCore", Version = "v1" });
@@ -65,7 +69,9 @@ namespace EFCore
             {
                 var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 var pcontext = serviceScope.ServiceProvider.GetService<PersonContext>();
+                var bcontext = serviceScope.ServiceProvider.GetService<BrickContext>();
                 DbInitialiser.Initialize(context, pcontext);
+                DbInitialiser.BrickDataInitialise(bcontext);
             }
 
 

@@ -41,7 +41,9 @@ namespace EFCore.Application.Services
 
                 //var rateStr = jsonDoc.RootElement.GetProperty("bpi").GetProperty(currency.ToString()).GetProperty("rate");
 
-                rate = Double.Parse(rateStr.GetString());
+                //rate = Double.Parse(rateStr.GetString());
+
+                rate = 2;
             }
             catch
             {

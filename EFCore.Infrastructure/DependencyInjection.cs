@@ -23,6 +23,8 @@ namespace EFCore.Infrastructure
             services.AddDbContext<PersonContext>(options => options.UseInMemoryDatabase(databaseName: "Person"));
             services.AddScoped<IPersonContext>(provider => provider.GetService<PersonContext>());
 
+            services.AddDbContext<BrickContext>(options => options.UseSqlServer(connectionString: configuration.GetConnectionString("BricksServer")));
+
             services.AddScoped<ITodoRepository, TodoRepository>();
 
             services.AddStackExchangeRedisCache(options =>
