@@ -3,6 +3,7 @@ using EFCore.Application.Interfaces;
 using EFCore.Configurations;
 using EFCore.Infrastructure;
 using EFCore.Infrastructure.Contexts;
+using EFCore.Middlewares;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +40,8 @@ namespace EFCore
         {
             services.AddInfrastructure(Configuration);
             services.AddApplication(Configuration);
+
+            services.AddTransient<RequestConsoleLoggingMiddleware>();
 
             services.AddControllers()
                     .AddFluentValidation(f => f.RegisterValidatorsFromAssemblyContaining<Startup>())
@@ -78,6 +81,11 @@ namespace EFCore
                 DbInitialiser.Initialize(context, pcontext);
                 DbInitialiser.BrickDataInitialise(bcontext);
             }
+
+            //app.UseMiddleware<RequestLoggingMiddleware>();
+
+            app.UseMiddleware<RequestConsoleLoggingMiddleware>();
+            app.UseRequestLogging();
 
 
             app.UseHttpsRedirection();
