@@ -1,4 +1,5 @@
 ﻿using EFCore.Application.Models.Bricks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,14 +9,9 @@ using System.Threading.Tasks;
 
 namespace EFCore.Infrastructure.Contexts
 {
-    public class BrickContext : DbContext
+    public class BrickContext : IdentityDbContext
     {
         public BrickContext(DbContextOptions<BrickContext> options) : base(options) { }
-
-        public BrickContext()
-        {
-
-        }
 
         public DbSet<Brick> Bricks { get; set; }
         public DbSet<Tag> Tags { get; set; }
@@ -26,6 +22,7 @@ namespace EFCore.Infrastructure.Contexts
         {
             modelBuilder.Entity<BasePlate>().HasBaseType<Brick>();
             modelBuilder.Entity<MiniHead>().HasBaseType<Brick>();
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
