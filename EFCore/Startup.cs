@@ -1,5 +1,6 @@
 using EFCore.Application;
 using EFCore.Application.Interfaces;
+using EFCore.Application.Profiles;
 using EFCore.Configurations;
 using EFCore.Infrastructure;
 using EFCore.Infrastructure.Contexts;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Reflection;
 using System.Text;
 
 namespace EFCore
@@ -70,6 +72,8 @@ namespace EFCore
 
             services.Configure<BaseConfiguration>(Configuration.GetSection("BaseUrl"));
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(BrickProfile)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

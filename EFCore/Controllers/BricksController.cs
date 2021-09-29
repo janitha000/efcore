@@ -1,4 +1,6 @@
-﻿using EFCore.Application.Models.Bricks;
+﻿using AutoMapper;
+using EFCore.Application.Dtos;
+using EFCore.Application.Models.Bricks;
 using EFCore.Infrastructure.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +18,12 @@ namespace EFCore.Controllers
     public class BricksController : ControllerBase
     {
         private BrickContext _context;
+        private IMapper _mapper;
 
-        public BricksController(BrickContext context)
+        public BricksController(BrickContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet("BrickAvailability")]
@@ -32,7 +36,21 @@ namespace EFCore.Controllers
                                         .Include(a => a.Vendor)
                                         .ToArrayAsync();
 
-                return Ok(availability);
+                //var brickAvailability = new[] {
+
+                //    new BrickAvailability()
+                //    {
+                //        BrickId = 1,
+                //        Price = 100,
+                //        Id = 2,
+                //        Vendor = new Vendor() { Vendorname ="Janitha", Id = 1}
+
+                //    }
+                //};
+
+                var dto = _mapper.Map<BrickAvailability[], IEnumerable<BrickAvailabilityDto>>(availability);
+
+                return Ok(dto);
             }
             catch(Exception ex)
             {

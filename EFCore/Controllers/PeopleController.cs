@@ -10,6 +10,8 @@ using EFCore.Application.Interfaces;
 using MediatR;
 using EFCore.Application.CQRS.Queries;
 using EFCore.Application.CQRS.Commands;
+using AutoMapper;
+using EFCore.Application.Dtos;
 
 namespace EFCore.Controllers
 {
@@ -18,10 +20,12 @@ namespace EFCore.Controllers
     public class PeopleController : ControllerBase
     {
         private readonly IMediator _mediatR;
+        private readonly IMapper _mapper;
 
-        public PeopleController(IMediator mediatR)
+        public PeopleController(IMediator mediatR, IMapper mapper)
         {
             _mediatR = mediatR;
+            _mapper = mapper;
         }
 
         // GET: api/People
@@ -42,6 +46,21 @@ namespace EFCore.Controllers
             }
 
             return person;
+        }
+
+        [HttpGet("automapper/{id}")]
+        public async Task<ActionResult<PersonDto>> GetPersonMapper(int id)
+        {
+            Person person = new()
+            {
+                Id = 1,
+                FirstName = "Janitha",
+                LastName = "Tennakoon"
+            };
+
+            var personDto = _mapper.Map<PersonDto>(person);
+            return Ok(personDto);
+            
         }
 
         //// PUT: api/People/5

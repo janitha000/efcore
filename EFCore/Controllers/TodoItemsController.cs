@@ -9,6 +9,7 @@ using EFCore.Application.Models;
 using EFCore.Application.Dtos;
 using EFCore.Application.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
+using AutoMapper;
 
 namespace EFCore.Controllers
 {
@@ -18,11 +19,13 @@ namespace EFCore.Controllers
     {
         private readonly ITodoRepository _todoRepository;
         private readonly IToDoService _todoService;
+        private readonly IMapper _mapper;
 
-        public TodoItemsController(ITodoRepository todoRepository, IToDoService todoService)
+        public TodoItemsController(ITodoRepository todoRepository, IToDoService todoService, IMapper mapper)
         {
             _todoRepository = todoRepository;
             _todoService = todoService;
+            _mapper = mapper;
 
         }
 
@@ -30,7 +33,9 @@ namespace EFCore.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
-            return Ok(await _todoRepository.GetTodoItems());
+            var todoItems = await _todoRepository.GetTodoItems();
+            var mappedTodoItems = _mapper.Map<TodoItemDto>(todoItems);
+            return Ok(mappedTodoItems);
         }
 
         // GET: api/TodoItems/5
