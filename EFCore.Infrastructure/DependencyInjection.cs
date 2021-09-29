@@ -58,10 +58,18 @@ namespace EFCore.Infrastructure
                 };
             });
 
+            services.AddAuthorization(cfg =>
+            {
+                cfg.AddPolicy("Admin", policy => policy.RequireClaim("type", "Admin"));
+                cfg.AddPolicy("User", policy => policy.RequireClaim("type", "User"));
+                cfg.AddPolicy("SuperAdmin", policy => policy.RequireClaim("AdminLevel", "1"));
+            });
+
             services.AddDefaultIdentity<IdentityUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = true;
             })
+             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<BrickContext>();
 
             return services;
