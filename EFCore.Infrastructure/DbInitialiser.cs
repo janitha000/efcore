@@ -1,5 +1,6 @@
 ﻿using EFCore.Application.Interfaces;
 using EFCore.Application.Models;
+using EFCore.Application.Models.Bricks;
 using EFCore.Infrastructure;
 using EFCore.Infrastructure.Contexts;
 using System;
@@ -19,6 +20,8 @@ namespace EFCore
             {
                 return;
             }
+
+            Console.WriteLine("Seeding data in to the database .......");
 
             var todoCategories = new TodoCategory[]
             {
@@ -68,6 +71,66 @@ namespace EFCore
 
             pcontext.SaveChanges();
 
+        }
+
+        public static void BrickDataInitialise (BrickContext brickContext)
+        {
+            brickContext.Database.EnsureCreated();
+            if (brickContext.Bricks.Any())
+            {
+                return;
+            }
+
+            Vendor brickKing, bunteSteine, heldDerSteine, brickHeaven;
+            var Vendors = new Vendor[]
+            {
+                brickKing = new Vendor { Vendorname = "Brick King" },
+                bunteSteine = new Vendor { Vendorname = "Bunte Steine" },
+                heldDerSteine = new Vendor { Vendorname = "Held der Steine" },
+                brickHeaven = new Vendor { Vendorname = "Brick Heaven" },
+            };
+
+            brickContext.AddRange(Vendors);
+
+            Tag rare, ninjago, minecraft;
+            var Tags = new Tag[]
+            {
+                rare = new Tag { Title = "Rare" },
+                ninjago = new Tag { Title = "Ninjago" },
+                minecraft = new Tag { Title = "Mincraft" },
+            };
+
+            brickContext.AddRange(Tags);
+
+            var BasePlate = new BasePlate
+            {
+                Title = "Baseplate 16 x 16 with Island on Blue Water Pattern",
+                Color = Colors.Green,
+                Tags = new() { rare, minecraft },
+                Length = 16,
+                Width = 16,
+                Availability = new List<BrickAvailability>
+                {
+                   new() { Vendor = bunteSteine, AvailableAmount = 5, Price = 6.6m },
+                   new() { Vendor = heldDerSteine, AvailableAmount = 10, Price = 5.9m },
+                }
+            };
+
+            brickContext.Add(BasePlate);
+
+            brickContext.Add(new Brick
+            {
+                Title = "Brick 1 x 2 x 1",
+                Color = Colors.Black
+            });
+            brickContext.AddAsync(new MiniHead
+            {
+                Title = "Minifigure, Head Dual Sided Black Eyebrows, Wide Open Mouth / Lopsided Grin",
+                Color = Colors.Yellow
+            });
+
+
+            brickContext.SaveChanges();
         }
     }
 }

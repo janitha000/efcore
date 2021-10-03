@@ -5,9 +5,13 @@ VisualStudioVersion = 16.0.31605.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore", "EFCore\EFCore.csproj", "{7C3442D3-1F16-4F4B-B5BC-B43E3C533342}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore.Infrastructure", "EFCore.Infrastructure\EFCore.Infrastructure.csproj", "{BFC3BAB4-CFDE-479B-851B-3CB6BBB48494}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.Infrastructure", "EFCore.Infrastructure\EFCore.Infrastructure.csproj", "{BFC3BAB4-CFDE-479B-851B-3CB6BBB48494}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore.Application", "EFCore.Application\EFCore.Application.csproj", "{EE3EE673-8F7F-4A58-863C-462C778AFA03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.Application", "EFCore.Application\EFCore.Application.csproj", "{EE3EE673-8F7F-4A58-863C-462C778AFA03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCore.IntegrationTests", "EfCore.IntegrationTests\EfCore.IntegrationTests.csproj", "{9CF8AFC8-EB32-4C62-BAE7-3493928BCC55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCore.UnitTests", "EfCore.UnitTests\EfCore.UnitTests.csproj", "{54DBCEDF-EAC8-4868-B664-C885BCB8AAA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{EE3EE673-8F7F-4A58-863C-462C778AFA03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE3EE673-8F7F-4A58-863C-462C778AFA03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE3EE673-8F7F-4A58-863C-462C778AFA03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CF8AFC8-EB32-4C62-BAE7-3493928BCC55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CF8AFC8-EB32-4C62-BAE7-3493928BCC55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CF8AFC8-EB32-4C62-BAE7-3493928BCC55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CF8AFC8-EB32-4C62-BAE7-3493928BCC55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54DBCEDF-EAC8-4868-B664-C885BCB8AAA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54DBCEDF-EAC8-4868-B664-C885BCB8AAA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54DBCEDF-EAC8-4868-B664-C885BCB8AAA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54DBCEDF-EAC8-4868-B664-C885BCB8AAA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

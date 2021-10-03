@@ -9,6 +9,7 @@ using EFCore.Application.Models;
 using EFCore.Application.Dtos;
 using EFCore.Application.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
+using AutoMapper;
 
 namespace EFCore.Controllers
 {
@@ -17,10 +18,14 @@ namespace EFCore.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly ITodoRepository _todoRepository;
+        private readonly IToDoService _todoService;
+        private readonly IMapper _mapper;
 
-        public TodoItemsController(ITodoRepository todoRepository)
+        public TodoItemsController(ITodoRepository todoRepository, IToDoService todoService, IMapper mapper)
         {
             _todoRepository = todoRepository;
+            _todoService = todoService;
+            _mapper = mapper;
 
         }
 
@@ -28,7 +33,9 @@ namespace EFCore.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
-            return Ok(await _todoRepository.GetTodoItems());
+            var todoItems = await _todoRepository.GetTodoItems();
+            var mappedTodoItems = _mapper.Map<TodoItemDto>(todoItems);
+            return Ok(mappedTodoItems);
         }
 
         // GET: api/TodoItems/5
@@ -51,6 +58,20 @@ namespace EFCore.Controllers
             var todoItems = await _todoRepository.GetToDoItemsByStatus(done);
 
             return Ok(todoItems);
+        }
+
+        [HttpGet("/toggle/{id}")]
+        public async Task<ActionResult<TodoItem>> ToggleDone(int id)
+        {
+            var todoItem = await _todoRepository.GetTodoItem(id);
+            if(todoItem is null)
+            {
+                return NotFound();
+            }
+
+            var item = _todoService.ToggleDone(todoItem);
+
+            return Ok(item);
         }
 
         // PUT: api/TodoItems/5
@@ -78,8 +99,17 @@ namespace EFCore.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
-            await _todoRepository.PostTodoItem(todoItem);
-            return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            try
+            {
+                await _todoRepository.PostTodoItem(todoItem);
+                return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Error occured {e.Message}");
+                return NoContent();
+            }
+            
         }
 
         // DELETE: api/TodoItems/5
@@ -94,5 +124,7 @@ namespace EFCore.Controllers
 
             return NoContent();
         }
+
+        
     }
 }
