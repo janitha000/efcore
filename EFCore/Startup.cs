@@ -1,6 +1,8 @@
 using EFCore.Application;
 using EFCore.Application.Interfaces;
+using EFCore.Application.Interfaces.SeviceInterfaces;
 using EFCore.Application.Profiles;
+using EFCore.Application.Services;
 using EFCore.Configurations;
 using EFCore.Infrastructure;
 using EFCore.Infrastructure.Contexts;
@@ -44,6 +46,9 @@ namespace EFCore
             services.AddApplication(Configuration);
 
             services.AddTransient<RequestConsoleLoggingMiddleware>();
+            services.AddTransient<UserRoleMiddleware>();
+
+            services.AddTransient<IAuthService, AuthService>();
 
             services.AddCors();
 
@@ -107,6 +112,8 @@ namespace EFCore
 
             app.UseMiddleware<RequestConsoleLoggingMiddleware>();
             app.UseRequestLogging();
+
+            app.UserRoleSettingMiddleware();
 
 
             //app.UseHttpsRedirection();

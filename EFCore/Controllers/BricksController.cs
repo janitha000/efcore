@@ -2,6 +2,7 @@
 using EFCore.Application.Dtos;
 using EFCore.Application.Models.Bricks;
 using EFCore.Infrastructure.Contexts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,11 +20,13 @@ namespace EFCore.Controllers
     {
         private BrickContext _context;
         private IMapper _mapper;
+        private IHttpContextAccessor _contextAccessor;
 
-        public BricksController(BrickContext context, IMapper mapper)
+        public BricksController(BrickContext context, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _contextAccessor = contextAccessor;
         }
 
         [HttpGet("BrickAvailability")]
@@ -31,6 +34,7 @@ namespace EFCore.Controllers
         {
             try
             {
+                var role = _contextAccessor.HttpContext.Items["Role"];
                 var availability = await _context.BrickAvailabilities
                                         .Include(a => a.Brick)
                                         .Include(a => a.Vendor)
