@@ -17,14 +17,14 @@ namespace EFCore.Middlewares
         }
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var role = "";
-            var token = context.Request.Headers["Authorization"];
-            if(token[0] is not null)
-            {
-                role = _authService.DecodeJWTTOken(token);
-            }
+            //var role = "";
+            //var token = context.Request.Headers["Authorization"];
+            //if(token[0] is not null)
+            //{
+            //    role = _authService.DecodeJWTTOken(token);
+            //}
 
-            context.Items["Role"] = role;
+            //context.Items["Role"] = role;
             await next(context);
 
 

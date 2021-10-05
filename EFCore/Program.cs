@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.AzureAppServices;
 using NLog.Web;
 using System;
 using System.Collections.Generic;
@@ -22,7 +24,7 @@ namespace EFCore
             }
             catch(Exception ex)
             {
-                logger.Error(ex, "Application stopped due to exception");
+                logger.Error($"Application stopped due to exception: {ex.Message}");
             }
             finally
             {
@@ -41,6 +43,16 @@ namespace EFCore
                 {
                     logging.ClearProviders();
                     logging.SetMinimumLevel(LogLevel.Trace);
+                    logging.AddAzureWebAppDiagnostics();
+                })
+                .ConfigureServices(services =>
+                {
+                    services.Configure<AzureFileLoggerOptions>(options =>
+                    {
+                        options.FileName = "my-azure-diagnostics-";
+                        options.FileSizeLimit = 50 * 1024;
+                        options.RetainedFileCountLimit = 5;
+                    });
                 })
                 .UseNLog();
     }
