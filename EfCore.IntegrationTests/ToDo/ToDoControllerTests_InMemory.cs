@@ -1,4 +1,5 @@
-﻿using EFCore.Application.Interfaces;
+﻿using AutoMapper;
+using EFCore.Application.Interfaces;
 using EFCore.Application.Models;
 using EFCore.Controllers;
 using EFCore.Infrastructure;
@@ -20,12 +21,14 @@ namespace EfCore.IntegrationTests.ToDo
         private DbContextOptions<ApplicationDbContext> options;
         private ITodoRepository repository;
         private IToDoService service;
+        private IMapper mapper;
 
         public ToDoControllerTests_InMemory()
         {
             options = new DbContextOptionsBuilder<ApplicationDbContext>().UseInMemoryDatabase(databaseName: "TodoTest").Options;
             repository = new Mock<ITodoRepository>().Object;
             service = new Mock<IToDoService>().Object;
+            mapper = new Mock<IMapper>().Object;
             
 
             using (var context = new ApplicationDbContext(options))

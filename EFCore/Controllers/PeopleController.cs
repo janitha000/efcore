@@ -12,9 +12,11 @@ using EFCore.Application.CQRS.Queries;
 using EFCore.Application.CQRS.Commands;
 using AutoMapper;
 using EFCore.Application.Dtos;
+using EFCore.Attributes;
 
 namespace EFCore.Controllers
 {
+    [ApiKey]
     [Route("api/[controller]")]
     [ApiController]
     public class PeopleController : ControllerBase
